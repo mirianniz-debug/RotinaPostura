@@ -1,5 +1,5 @@
 /* Rotina de Postura: funciona sem internet depois da primeira abertura */
-var VERSAO = 'postura-v1';
+var VERSAO = 'postura-v2';
 var ARQUIVOS = ['./', 'index.html', 'audio.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', function(e){
   e.waitUntil(caches.open(VERSAO).then(function(c){ return c.addAll(ARQUIVOS); }).then(function(){ return self.skipWaiting(); }));
