@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rotina de Postura</title>
+<meta name="theme-color" content="#1E2A1D">
+<meta name="application-name" content="Rotina de Postura">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Postura">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<style>
+/* Layout: faixa escura de abertura com curvas de nível que se desenham, depois cartões sobre fundo off-white esverdeado.
+   Durante a sessão, uma haste com um nó por etapa vai preenchendo, como um caule que cresce. */
+:root{
+  --bg:#F2F1E8; --surface:#FAF9F2; --fg:#202B1D; --muted:#5C6753; --line:#D8D7C5;
+  --moss:#3E5A3A; --on-moss:#F6F5EC; --moss-soft:#DCE3CC;
+  --clay:#9C5B36; --clay-soft:#EBD9C8; --water:#4A706E;
+  --deep:#1E2A1D; --on-deep:#E9EADB; --on-deep-muted:#B3BCA3; --contour:#7E9A5E;
+  --hero-btn-bg:#D6DEC0; --hero-btn-fg:#1E2A1D;
+  --serif:'Young Serif',Georgia,'Times New Roman',serif;
+  --sans:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131A12; --surface:#1B241A; --fg:#E7E9D9; --muted:#A5AF98; --line:#2E3A2C;
+    --moss:#93B27D; --on-moss:#101710; --moss-soft:#26332A;
+    --clay:#D49A70; --clay-soft:#3A2C22; --water:#86B5B2;
+    --deep:#0C120B; --on-deep:#E9EADB; --on-deep-muted:#A9B39B; --contour:#6E8B4E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131A12; --surface:#1B241A; --fg:#E7E9D9; --muted:#A5AF98; --line:#2E3A2C;
+  --moss:#93B27D; --on-moss:#101710; --moss-soft:#26332A;
+  --clay:#D49A70; --clay-soft:#3A2C22; --water:#86B5B2;
+  --deep:#0C120B; --on-deep:#E9EADB; --on-deep-muted:#A9B39B; --contour:#6E8B4E;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--sans);-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:clamp(2rem,8vw,2.8rem)}
+h2{font-size:1.4rem}
+h3{font-size:1.15rem}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--clay);outline-offset:2px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* abertura */
+.hero{position:relative;overflow:hidden;background:var(--deep);color:var(--on-deep)}
+.contour{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.contour path{fill:none;stroke:var(--contour);stroke-width:1.1;stroke-opacity:.5;stroke-dasharray:1;stroke-dashoffset:0;animation:draw 2.6s ease-out both}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.hero-in{position:relative;padding-block:28px 32px;display:grid;gap:14px}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.date{color:var(--on-deep-muted);font-size:.95rem}
+.lede{color:var(--on-deep-muted);max-width:34ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.link-btn{background:none;border:0;padding:6px 0;color:var(--on-deep-muted);font-size:.9rem;text-decoration:underline;text-underline-offset:3px}
+
+.btn{border:0;border-radius:12px;padding:13px 20px;font-weight:600;min-height:48px;background:var(--moss);color:var(--on-moss)}
+.btn:active{transform:translateY(1px)}
+.btn-hero{background:var(--hero-btn-bg);color:var(--hero-btn-fg)}
+.btn-ghost{background:transparent;border:1.5px solid var(--on-deep-muted);color:var(--on-deep)}
+.btn-line{background:transparent;border:1.5px solid var(--line);color:var(--fg)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+.content{display:grid;gap:28px;padding-block:28px 40px}
+.sec{display:grid;gap:12px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+
+/* semana */
+.strip{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;margin-top:4px}
+.dia{display:grid;justify-items:center;gap:4px;font-size:.72rem;color:var(--muted)}
+.dot{width:100%;max-width:20px;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line)}
+.dot.on{background:var(--moss);border-color:var(--moss)}
+.dot.half{background:var(--moss-soft);border-color:var(--moss)}
+.dia.hoje .dot{outline:2px solid var(--clay);outline-offset:2px}
+
+/* gráfico */
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;font-size:.9rem;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--moss);border-color:var(--moss);color:var(--on-moss)}
+.chart{width:100%;height:auto;display:block}
+.chart text{font:11px var(--sans);fill:var(--muted)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* listas */
+ul.rules{margin:0;padding-left:1.1rem;display:grid;gap:6px}
+details.step{border-top:1px solid var(--line);padding:10px 0}
+details.step:first-of-type{border-top:0}
+details.step summary{display:flex;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;align-items:baseline}
+details.step summary::-webkit-details-marker{display:none}
+details.step summary span:first-child{font-weight:600}
+details.step summary .t{color:var(--muted);font-size:.9rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.detail{display:grid;gap:8px;padding-top:10px}
+.detail ul{margin:0;padding-left:1.1rem;display:grid;gap:6px}
+.why{color:var(--muted)}
+.care{background:var(--clay-soft);border-radius:10px;padding:10px 12px;font-size:.95rem}
+.demo{color:var(--water);font-size:.92rem;text-underline-offset:3px;justify-self:start}
+.foot{color:var(--muted);font-size:.88rem}
+
+/* check-in */
+.screen{padding-block:28px 40px;display:grid;gap:20px}
+.slider-row{display:grid;gap:6px;padding:14px 0;border-top:1px solid var(--line)}
+.slider-row:first-child{border-top:0}
+.slider-head{display:flex;justify-content:space-between;align-items:baseline}
+.val{font-family:var(--serif);font-size:1.5rem;font-variant-numeric:tabular-nums;color:var(--moss)}
+input[type=range]{width:100%;accent-color:var(--moss);height:32px}
+.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+
+/* sessão */
+.run{padding-block:20px 120px;display:grid;gap:18px;justify-items:center;text-align:center}
+.run-top{display:flex;justify-content:space-between;align-items:center;width:100%;gap:12px}
+.run-top .muted{font-size:.9rem}
+.stem{position:relative;display:flex;justify-content:space-between;align-items:center;width:100%;height:16px;margin:2px 0}
+.stem::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line);transform:translateY(-50%)}
+.stem li{position:relative;list-style:none;width:8px;height:8px;border-radius:50%;background:var(--line)}
+.stem li.done{background:var(--moss)}
+.stem li.now{width:14px;height:14px;background:var(--bg);border:3px solid var(--clay)}
+.stem{margin-block:2px;padding:0}
+.ring{position:relative;width:200px;height:200px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .tr{fill:none;stroke:var(--line);stroke-width:9}
+.ring .pr{fill:none;stroke:var(--moss);stroke-width:9;stroke-linecap:round}
+.clock{position:absolute;inset:0;display:grid;place-items:center;font-size:2.8rem;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.chip{display:inline-block;background:var(--moss-soft);color:var(--fg);border-radius:999px;padding:4px 12px;font-size:.88rem}
+.run-body{display:grid;gap:12px;text-align:left;width:100%}
+.run-body ul{margin:0;padding-left:1.1rem;display:grid;gap:8px}
+.next{color:var(--muted);font-size:.9rem;text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:5}
+.bar .wrap{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:10px}
+.confirm{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;background:var(--clay-soft);border-radius:12px;padding:12px;width:100%}
+
+/* fim */
+.deltas{display:grid;gap:8px}
+.delta{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.delta:first-child{border-top:0}
+.delta b{font-variant-numeric:tabular-nums}
+.note{color:var(--muted);font-size:.92rem}
+@media (prefers-reduced-motion:reduce){
+  .contour path{animation:none}
+  .btn:active{transform:none}
+}
+</style>
+</head>
+<body>
+<main id="v-home">
+  <header class="hero">
+    <svg class="contour" id="contour" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="wrap hero-in">
+      <div class="hero-top">
+        <p class="date" id="hoje"></p>
+        <button class="link-btn" id="b-som" type="button" aria-pressed="true">Som ligado</button>
+      </div>
+      <h1>Rotina de hoje</h1>
+      <p class="lede" id="resumo"></p>
+      <div class="hero-actions">
+        <button class="btn btn-hero" id="b-iniciar" type="button">Começar rotina</button>
+        <button class="btn btn-ghost" id="b-pausa" type="button">Pausa rápida de 2 min</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap content">
+    <section class="sec" aria-labelledby="h-semana">
+      <h2 id="h-semana">Últimos 14 dias</h2>
+      <div class="card">
+        <p id="semana-txt"></p>
+        <div class="strip" id="strip" aria-hidden="true"></div>
+        <p class="note" style="margin-top:10px">Círculo cheio: rotina completa. Círculo claro: só pausas rápidas.</p>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="h-evo">
+      <h2 id="h-evo">Dor antes e depois</h2>
+      <div class="card" style="display:grid;gap:12px">
+        <div class="seg" id="regioes" role="group" aria-label="Região"></div>
+        <svg class="chart" id="grafico" viewBox="0 0 340 190" role="img" aria-label="Gráfico da dor registrada antes e depois de cada rotina"></svg>
+        <div class="legend"><span><i style="background:var(--water)"></i>Antes</span><span><i style="background:var(--moss)"></i>Depois</span></div>
+        <p class="note" id="grafico-txt"></p>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="h-antes">
+      <h2 id="h-antes">Antes de começar</h2>
+      <div class="card">
+        <ul class="rules">
+          <li>Use um tapete ou superfície firme. Uma toalha de banho enrolada e uma mini band ajudam, mas não são obrigatórias.</li>
+          <li>Dor durante o movimento: até 3 em 10, e sem piorar nas 24 horas seguintes.</li>
+          <li>Pare se aparecer fisgada no ombro, dor que desce pela perna, formigamento ou tontura.</li>
+          <li>Amplitude pequena e controlada. Nenhum passo pede flexão de tronco mantida, braços acima da cabeça ou alongamento até o fim.</li>
+          <li>Ao sair do chão, sente por 20 segundos e levante em duas etapas.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="h-plano">
+      <h2 id="h-plano">O que tem na rotina</h2>
+      <div class="card" id="plano"></div>
+    </section>
+
+    <p class="foot">Rotina geral de mobilidade e ativação. Não substitui avaliação com fisioterapeuta. Se a dor passar a irradiar para a perna, aparecer à noite ou vier com fraqueza, procure atendimento.</p>
+  </div>
+</main>
+
+<main id="v-antes" hidden>
+  <div class="wrap screen">
+    <h2>Como você está agora?</h2>
+    <p class="muted">De 0 (sem dor) a 10 (pior dor). Ajuste cada região antes de começar.</p>
+    <div class="card" id="check-antes"></div>
+    <div style="display:grid;gap:10px">
+      <button class="btn" id="b-comecar" type="button">Começar</button>
+      <button class="btn btn-line" id="b-cancelar-antes" type="button">Voltar</button>
+    </div>
+  </div>
+</main>
+
+<main id="v-run" hidden>
+  <div class="wrap run">
+    <div class="run-top">
+      <span class="muted" id="r-prog"></span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-line" id="b-voz" type="button" aria-pressed="true" style="min-height:40px;padding:8px 14px">Voz ligada</button>
+        <button class="btn btn-line" id="b-sair" type="button" style="min-height:40px;padding:8px 14px">Sair</button>
+      </div>
+    </div>
+    <div class="confirm" id="sair-box" hidden>
+      <span>Encerrar sem salvar?</span>
+      <button class="btn" id="b-sair-sim" type="button" style="min-height:40px;padding:8px 14px">Encerrar</button>
+      <button class="btn btn-line" id="b-sair-nao" type="button" style="min-height:40px;padding:8px 14px">Continuar</button>
+    </div>
+    <ol class="stem" id="stem" aria-hidden="true"></ol>
+    <div>
+      <h2 id="r-titulo"></h2>
+      <p class="muted" id="r-parte" style="margin-top:4px"></p>
+    </div>
+    <span class="chip" id="r-pos"></span>
+    <button class="btn btn-line" id="b-ouvir" type="button" style="min-height:40px;padding:8px 14px">Ouvir a orientação de novo</button>
+    <p class="note" id="voz-nota" hidden></p>
+    <div class="ring">
+      <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="tr" cx="110" cy="110" r="100"/><circle class="pr" id="r-anel" cx="110" cy="110" r="100"/></svg>
+      <div class="clock" id="r-clock" role="timer" aria-live="off">0:00</div>
+    </div>
+    <div class="run-body" id="r-corpo"></div>
+    <p class="next" id="r-prox"></p>
+  </div>
+  <div class="bar">
+    <div class="wrap">
+      <button class="btn btn-line" id="b-volta" type="button">Voltar</button>
+      <button class="btn" id="b-play" type="button">Pausar</button>
+      <button class="btn btn-line" id="b-pula" type="button">Pular</button>
+    </div>
+  </div>
+</main>
+
+<main id="v-depois" hidden>
+  <div class="wrap screen">
+    <h2>Como ficou?</h2>
+    <p class="muted">Os controles começam no valor de antes. Ajuste para como você sente agora.</p>
+    <div class="card" id="check-depois"></div>
+    <button class="btn" id="b-salvar" type="button">Salvar sessão</button>
+    <p class="note" id="salvar-erro" hidden></p>
+  </div>
+</main>
+
+<main id="v-fim" hidden>
+  <div class="wrap screen">
+    <h2 id="fim-titulo">Sessão concluída</h2>
+    <p id="fim-resumo"></p>
+    <div class="card deltas" id="fim-deltas" hidden></div>
+    <p class="note" id="fim-nota"></p>
+    <button class="btn" id="b-fim" type="button">Voltar ao início</button>
+  </div>
+</main>
+
+<script src="audio.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ---------- conteúdo ---------- */
+var PRINCIPAL = [
+ {titulo:'Respiração costal 360°', pos:'Deitada de costas, joelhos dobrados', seg:120,
+  como:['Deite de costas com os pés no chão, ou com as panturrilhas apoiadas numa cadeira ou sofá.',
+        'Mãos nas costelas inferiores. Inspire pelo nariz por 4 segundos, expandindo as costelas para os lados e para trás, sem empurrar a barriga.',
+        'Expire por 6 segundos, como um "ssss" longo, sentindo as costelas descerem e a faixa profunda do abdômen se ativar de leve.'],
+  porque:'Reposiciona a caixa torácica sobre a pelve e reduz o trabalho de trapézio superior e escalenos, que costumam respirar no lugar do diafragma.',
+  cuidado:'Se sentir tontura, volte a uma respiração natural e fique parada por alguns segundos.',
+  busca:'respiração costal diafragmática deitada exercício'},
+ {titulo:'Queixo recuado deitada', pos:'Deitada de costas, cabeça apoiada', seg:90,
+  como:['Olhe para o teto, com a cabeça apoiada no chão ou num travesseiro fino.',
+        'Deslize o queixo em direção ao pescoço, como uma papada suave, sem levantar nem inclinar a cabeça.',
+        'Segure 5 segundos, solte por 5 segundos. Cerca de 6 repetições.'],
+  porque:'Ativa os flexores profundos do pescoço, que perdem resistência depois de horas com a cabeça projetada para a tela.',
+  cuidado:'Esforço leve, perto de 20% da força. Sem dor na nuca nem na base do crânio.',
+  busca:'queixo recuado deitada chin tuck exercício'},
+ {titulo:'Extensão torácica na toalha', pos:'Deitada de costas sobre toalha enrolada', seg:120,
+  como:['Enrole uma toalha de banho e deite com ela atravessada sob a parte média das costas, na altura das escápulas. Joelhos dobrados.',
+        'Cruze os braços sobre o peito. Deixe o tronco superior estender sobre a toalha enquanto respira fundo, com as costelas inferiores baixas e a lombar sem arquear.',
+        'A cada 30 segundos, desloque a toalha um pouco para cima ou para baixo.'],
+  porque:'A coluna torácica perde extensão no trabalho sentado. Quando ela se move melhor, a lombar deixa de compensar.',
+  cuidado:'Braços sempre abaixo da altura dos ombros. Não force o fim da amplitude.',
+  busca:'extensão torácica toalha enrolada exercício'},
+ {titulo:'Ponte de glúteo sem peso', pos:'Deitada de costas, joelhos dobrados', seg:90,
+  como:['Pés na largura do quadril, calcanhares perto dos glúteos.',
+        'Expire e eleve o quadril empurrando os calcanhares no chão, até formar uma linha entre ombros, quadril e joelhos, sem arquear a lombar.',
+        'Segure 2 segundos no alto e desça devagar. Cerca de 10 repetições, com pausa entre elas.'],
+  porque:'Um glúteo máximo ativo ajuda a manter a pelve em posição neutra e tira carga da lombar e do quadril.',
+  cuidado:'Se a lombar trabalhar mais que o glúteo, reduza a altura. Joelhos sem travar.',
+  busca:'ponte de glúteo exercício como fazer'},
+ {titulo:'Dead bug modificado', pos:'Deitada de costas, pernas em mesa', seg:90,
+  como:['Quadris e joelhos a 90°, braços estendidos apontando para o teto.',
+        'Mantenha a lombar neutra e as costelas baixas. Leve um calcanhar até tocar de leve o chão e volte, alternando as pernas.',
+        'Se estiver difícil, deixe os pés no chão e eleve uma perna por vez.'],
+  porque:'Treina o abdômen profundo enquanto os membros se movem, que é o que sustenta a coluna no dia a dia.',
+  cuidado:'Se a lombar descolar do chão ou doer, diminua a amplitude. Os braços ficam à frente, nunca acima da cabeça.',
+  busca:'dead bug exercício core iniciante'},
+ {titulo:'Livro aberto e concha', pos:'Deitada de lado', seg:105,
+  lados:['deitada sobre o lado direito','deitada sobre o lado esquerdo'],
+  como:['Livro aberto (cerca de 60 segundos): quadris e joelhos a 90°, travesseiro entre os joelhos, braços estendidos à frente com as palmas juntas. Abra o braço de cima como a página de um livro, acompanhando com o olhar, até onde o tronco girar sem o joelho sair do lugar. Volte devagar.',
+        'Concha (resto do tempo): mini band acima dos joelhos, se tiver. Pés juntos e pelve parada, abra o joelho de cima e feche devagar.'],
+  porque:'Recupera a rotação da coluna torácica e ativa o glúteo médio e os rotadores externos, que estabilizam a pelve.',
+  cuidado:'Abra o braço só até onde o ombro não pinçar. Na concha, a pelve não rola para trás. Se o quadril travar, diminua a abertura.',
+  busca:'livro aberto rotação torácica clamshell exercício'},
+ {titulo:'Gato e vaca em pequena amplitude', pos:'Em quatro apoios', seg:90,
+  como:['Mãos sob os ombros, joelhos sob o quadril.',
+        'Inspire deixando o peito avançar um pouco. Expire arredondando só um pouco as costas. Use cerca de metade da amplitude possível, 5 a 6 segundos por ciclo.'],
+  porque:'Mobiliza a coluna segmento a segmento sem chegar ao fim da amplitude, o que poupa articulações hipermóveis e discos.',
+  cuidado:'Não arredonde a lombar ao máximo. Se aparecer dor que desce pela perna, pare.',
+  busca:'gato e vaca exercício coluna pequena amplitude'},
+ {titulo:'Rotação torácica em quatro apoios', pos:'Em quatro apoios', seg:45,
+  lados:['mão direita na nuca','mão esquerda na nuca'],
+  como:['Com a mão indicada atrás da nuca, cotovelo apontando para o chão.',
+        'Gire o tronco levando o cotovelo em direção ao teto e acompanhe com o olhar. Volte devagar.',
+        'Quadril parado e lombar firme: o giro vem das costas altas.'],
+  porque:'Treina a rotação onde ela deve acontecer, entre as escápulas, poupando a lombar.',
+  cuidado:'Se o ombro de apoio fisgar, apoie o antebraço no chão.',
+  busca:'rotação torácica quatro apoios mão na nuca'},
+ {titulo:'Círculos de quadril (CARs)', pos:'Em quatro apoios', seg:60,
+  lados:['perna direita','perna esquerda'],
+  como:['Levante um joelho do chão, mantendo-o dobrado a 90°.',
+        'Desenhe o maior círculo que conseguir com o joelho, devagar, sem mexer a pelve nem a lombar. Cerca de 5 círculos num sentido e 5 no outro.'],
+  porque:'Movimento ativo em toda a amplitude confortável do quadril, que alimenta a articulação e o controle motor sem alongamento estático.',
+  cuidado:'Se o quadril travar ou estalar com dor, reduza o círculo. Só desenhe até onde a pelve fica parada.',
+  busca:'hip CARs quatro apoios círculos de quadril'},
+ {titulo:'Extensão de perna em quatro apoios', pos:'Em quatro apoios', seg:45,
+  lados:['perna direita','perna esquerda'],
+  como:['Lombar neutra, pelve nivelada, olhar para o chão.',
+        'Estenda a perna indicada para trás até alinhar com o tronco, segure 2 segundos e volte sem encostar o joelho. Repita no ritmo da respiração.'],
+  porque:'Treina o glúteo e a estabilidade da pelve contra a rotação, sem pedir o ombro acima da cabeça.',
+  cuidado:'Não passe da linha do tronco, para não arquear a lombar. Ao terminar, sente-se por 20 segundos e levante em duas etapas: primeiro um joelho, depois em pé.',
+  busca:'extensão de perna quatro apoios glúteo'},
+ {titulo:'Retração escapular na parede', pos:'Em pé, costas na parede', seg:90,
+  como:['Calcanhares a uns 10 cm da parede, glúteos e escápulas encostados. A cabeça só encosta se a nuca não arquear.',
+        'Recue o queixo e leve as escápulas para baixo e para trás, como quem guarda algo no bolso de trás. Segure 5 segundos e solte. Cerca de 8 repetições.'],
+  porque:'Fortalece trapézio inferior e serrátil, que seguram a escápula no lugar e aliviam a região entre elas.',
+  cuidado:'Não estufe o peito nem arqueie a lombar. Cotovelos junto ao corpo.',
+  busca:'retração escapular parede exercício postura'},
+ {titulo:'Rotação externa isométrica do ombro', pos:'Em pé, de lado para a parede', seg:45,
+  lados:['ombro direito','ombro esquerdo'],
+  como:['Cotovelo a 90° junto ao corpo, com uma toalha dobrada entre o cotovelo e as costelas. Dorso da mão encostado na parede.',
+        'Empurre a parede com cerca de 30% da força, sem mover o ombro. Segure 15 segundos, descanse e repita.'],
+  porque:'Contrações isométricas leves ativam o manguito rotador com baixa carga no tendão e costumam reduzir a dor.',
+  cuidado:'Dor de até 3 em 10. Se der fisgada, diminua a força ou pule o passo.',
+  busca:'rotação externa isométrica ombro parede manguito'},
+ {titulo:'Caminhada lateral com mini band', pos:'Em pé', seg:90,
+  como:['Mini band acima dos joelhos ou nos tornozelos, se tiver. Meio agachamento leve, joelhos sem travar e alinhados com os pés.',
+        'Dê passos laterais curtos, 8 para um lado e 8 de volta, mantendo a tensão na faixa.'],
+  porque:'Ativa o glúteo médio, que segura a pelve nivelada a cada passo.',
+  cuidado:'Tronco ereto, sem peso nas costas. Sem a faixa, o exercício também vale.',
+  busca:'caminhada lateral mini band monster walk'},
+ {titulo:'Reset postural em pé', pos:'Em pé, perto de um espelho se puder', seg:120,
+  como:['Pés na largura do quadril, peso distribuído entre calcanhar, base do dedão e base do dedo mínimo.',
+        'Joelhos macios, costelas empilhadas sobre a pelve, ombros soltos, queixo levemente recuado, topo da cabeça crescendo para o teto.',
+        'Balance de leve para frente e para trás até achar o ponto de menor esforço e respire em 360°.'],
+  porque:'A posição neutra é a de menor demanda muscular, mas funciona como uma faixa, não como um ponto fixo. Variar de posição protege mais que ficar rígida.',
+  cuidado:'Sem rigidez e sem peito estufado. Se cansar, mude de posição.',
+  busca:'alinhamento postural em pé neutro exercício'},
+ {titulo:'Caminhada consciente', pos:'Andando pela casa', seg:180,
+  como:['Caminhe em passo médio, olhar à frente, braços soltos.',
+        'Perceba a rotação alternada de tronco e quadril: os braços balançam em contrapeso ao passo.'],
+  porque:'A marcha alterna rotação de tronco e pelve e interrompe a carga estática, uma das principais fontes de fadiga postural.',
+  cuidado:'Se sentir tontura, sente e respire até passar.',
+  busca:'caminhada consciente postura marcha'},
+ {titulo:'Fechamento e respiração', pos:'Sentada, pés no chão', seg:120,
+  como:['Sente-se com os pés apoiados e as mãos no colo.',
+        'Respire devagar: 4 segundos para inspirar e 6 para expirar. Perceba como está cada região do corpo.',
+        'Em seguida você registra como ficou.'],
+  porque:'Expirações longas favorecem a ativação parassimpática e ajudam a fechar a sessão com o corpo em repouso.',
+  cuidado:'Sem forçar o ritmo. Se ficar tonta, respire normalmente.',
+  busca:'respiração lenta expiração longa relaxamento'}
+];
+
+var PAUSA = [
+ {titulo:'Reset sentada', pos:'Sentada na cadeira', seg:30,
+  como:['Pés apoiados, quadris bem no fundo da cadeira, costelas sobre a pelve.','Recue o queixo de leve e solte os ombros. Respire fundo duas vezes.'],
+  porque:'Interrompe a postura projetada com custo muscular mínimo.', cuidado:'Sem rigidez. Se cansar, mude de posição.',
+  busca:'postura sentada correta escritório exercício'},
+ {titulo:'Retração escapular sentada', pos:'Sentada na cadeira', seg:30,
+  como:['Cotovelos junto ao corpo, antebraços para a frente.','Leve as escápulas para baixo e para trás, segure 5 segundos e solte. Repita.'],
+  porque:'Ativa a musculatura que sustenta a escápula depois de muito tempo digitando.', cuidado:'Sem arquear a lombar.',
+  busca:'retração escapular sentada escritório'},
+ {titulo:'Rotação torácica sentada', pos:'Sentada na cadeira', seg:20,
+  lados:['para a direita','para a esquerda'],
+  como:['Braços cruzados no peito, pelve parada.','Gire o tronco devagar olhando para o lado indicado, até onde o giro vier das costas altas. Volte e repita.'],
+  porque:'Devolve rotação à coluna torácica em poucos segundos.', cuidado:'Sem forçar o fim do giro.',
+  busca:'rotação torácica sentada escritório'},
+ {titulo:'Levantar e andar', pos:'Em pé', seg:20,
+  como:['Levante-se em duas etapas: apoie as mãos nas coxas e estenda os joelhos devagar.','Ande até a janela ou a porta e volte, soltando os braços.'],
+  porque:'Mudar de posição renova a carga sobre os tecidos e a circulação.', cuidado:'Se sentir tontura, sente e respire.',
+  busca:'pausa ativa trabalho sentado alongamento leve'}
+];
+
+/* texto falado em cada exercício (frases curtas, para ouvir sem olhar a tela) */
+var FALA = {
+ 'Respiração costal 360°':'Respiração costal. Deite de costas, joelhos dobrados e mãos nas costelas de baixo. Inspire pelo nariz por quatro segundos, abrindo as costelas para os lados. Expire soltando o ar devagar por seis segundos.',
+ 'Queixo recuado deitada':'Queixo recuado. De costas, com a cabeça apoiada, deslize o queixo em direção ao pescoço, sem inclinar a cabeça. Segure cinco segundos e solte. Esforço bem leve.',
+ 'Extensão torácica na toalha':'Extensão torácica. Coloque a toalha enrolada atravessada sob a parte média das costas, na altura das escápulas. Cruze os braços no peito e deixe as costas se abrirem sobre a toalha, respirando fundo. Lombar sem arquear.',
+ 'Ponte de glúteo sem peso':'Ponte de glúteo. Pés na largura do quadril. Expire e eleve o quadril empurrando os calcanhares no chão, sem arquear a lombar. Segure dois segundos e desça devagar.',
+ 'Dead bug modificado':'Exercício do besouro morto. Joelhos e quadris a noventa graus e braços para o teto. Mantenha a lombar neutra. Toque de leve um calcanhar no chão e volte, alternando as pernas.',
+ 'Livro aberto e concha':'Livro aberto e concha. Joelhos dobrados e palmas juntas à frente. Abra o braço de cima como a página de um livro, olhando para a mão, e volte devagar. Depois, com os pés juntos, abra e feche o joelho de cima.',
+ 'Gato e vaca em pequena amplitude':'Gato e vaca, em quatro apoios. Inspire e deixe o peito avançar um pouco. Expire e arredonde só um pouco as costas. Movimento pequeno e lento.',
+ 'Rotação torácica em quatro apoios':'Rotação torácica. Em quatro apoios, com a mão na nuca e o cotovelo apontando para o chão. Gire levando o cotovelo para o teto, olhando para ele. O giro vem das costas altas.',
+ 'Círculos de quadril (CARs)':'Círculos de quadril. Levante um joelho, dobrado a noventa graus. Desenhe um círculo grande e lento, sem mexer a pelve. Cinco para um sentido e cinco para o outro.',
+ 'Extensão de perna em quatro apoios':'Extensão de perna. Lombar neutra. Estenda a perna para trás até alinhar com o tronco, segure dois segundos e volte, no ritmo da respiração.',
+ 'Retração escapular na parede':'Retração escapular na parede. Encoste calcanhares, glúteos e escápulas. Recue o queixo e leve as escápulas para baixo e para trás. Segure cinco segundos e solte.',
+ 'Rotação externa isométrica do ombro':'Rotação externa do ombro. De lado para a parede, cotovelo a noventa graus, com uma toalha entre o cotovelo e as costelas. Empurre a parede com trinta por cento da força, por quinze segundos, e descanse.',
+ 'Caminhada lateral com mini band':'Caminhada lateral. Meio agachamento leve, joelhos alinhados com os pés. Oito passos curtos para um lado e oito de volta, mantendo a faixa esticada.',
+ 'Reset postural em pé':'Reset postural. Pés na largura do quadril, peso distribuído nos três pontos do pé. Joelhos macios, costelas sobre a pelve, queixo levemente recuado. Balance de leve e encontre o ponto de menor esforço.',
+ 'Caminhada consciente':'Caminhada consciente. Ande em passo médio, olhar à frente, braços soltos. Perceba o tronco girando em contrapeso ao passo.',
+ 'Fechamento e respiração':'Fechamento. Sente-se com os pés apoiados. Respire quatro segundos para dentro e seis para fora, e perceba como está o corpo. Depois você registra como ficou.',
+ 'Reset sentada':'Reset sentada. Pés apoiados, costelas sobre a pelve, queixo levemente recuado e ombros soltos.',
+ 'Retração escapular sentada':'Retração escapular. Cotovelos junto ao corpo. Leve as escápulas para baixo e para trás, segure cinco segundos e solte.',
+ 'Rotação torácica sentada':'Rotação do tronco. Braços cruzados, gire devagar olhando para o lado indicado e volte.',
+ 'Levantar e andar':'Levante em duas etapas, com as mãos nas coxas. Depois ande até a janela e volte, soltando os braços.'
+};
+var FALA_FIM = {
+ 'Extensão de perna em quatro apoios':'Ao terminar, sente-se por vinte segundos e levante em duas etapas.'
+};
+
+/* ---------- utilidades ---------- */
+function $(s){ return document.querySelector(s); }
+function h(tag, attrs){
+  var e = document.createElement(tag), k, kids = Array.prototype.slice.call(arguments, 2);
+  if (attrs) for (k in attrs){
+    var v = attrs[k];
+    if (k === 'class') e.className = v;
+    else if (k === 'text') e.textContent = v;
+    else if (k.slice(0,2) === 'on') e.addEventListener(k.slice(2), v);
+    else if (v === true) e.setAttribute(k, '');
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  (function add(list){
+    list.forEach(function(c){
+      if (Array.isArray(c)) return add(c);
+      if (c == null || c === false) return;
+      e.append(c.nodeType ? c : document.createTextNode(String(c)));
+    });
+  })(kids);
+  return e;
+}
+var NS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs){
+  var e = document.createElementNS(NS, tag), k;
+  if (attrs) for (k in attrs){ if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  return e;
+}
+function pad2(n){ return n < 10 ? '0' + n : '' + n; }
+function dayKey(d){ return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()); }
+function fmtDur(sec){
+  var m = Math.floor(sec/60), r = sec % 60;
+  if (m === 0) return r + ' s';
+  return r === 0 ? m + ' min' : m + ' min ' + r + ' s';
+}
+function fmtClock(ms){
+  var t = Math.max(0, Math.ceil(ms/1000)), m = Math.floor(t/60), r = t % 60;
+  return m + ':' + pad2(r);
+}
+function rawSeconds(r){ return r.seg * (r.lados ? r.lados.length : 1); }
+function totalSeconds(list){ return list.reduce(function(a,r){ return a + rawSeconds(r); }, 0); }
+function expand(list){
+  var out = [];
+  list.forEach(function(r, ri){
+    if (r.lados){
+      r.lados.forEach(function(l, li){
+        var c = {}; for (var k in r) c[k] = r[k];
+        c.parte = l; c.raw = ri; c.lado = li + 1;
+        c.fala = li === 0 ? ('Primeiro, ' + l + '. ' + (FALA[r.titulo] || '')) : ('Agora do outro lado, ' + l + '. Repita. ' + (FALA_FIM[r.titulo] || ''));
+        out.push(c);
+      });
+    } else { var c2 = {}; for (var k2 in r) c2[k2] = r[k2]; c2.raw = ri; c2.fala = FALA[r.titulo] || ''; out.push(c2); }
+  });
+  return out;
+}
+function oneDecimal(n){ return (Math.round(n*10)/10).toString().replace('.', ','); }
+
+var REGIOES = [{k:'esc', nome:'Entre as escápulas'}, {k:'lomb', nome:'Lombar'}, {k:'quad', nome:'Quadril'}];
+
+/* ---------- armazenamento ---------- */
+var store = {
+  mode:'local', col:null, list:[], loaded:false,
+  loadLocal:function(){
+    try { var raw = localStorage.getItem('rp-sessoes'); this.list = raw ? JSON.parse(raw) : []; } catch(e){ this.list = []; }
+    if (!Array.isArray(this.list)) this.list = [];
+  },
+  saveLocal:function(){ try { localStorage.setItem('rp-sessoes', JSON.stringify(this.list)); } catch(e){} },
+  sorted:function(){ return this.list.slice().sort(function(a,b){ return b.ts - a.ts; }); },
+  add:function(rec){
+    var self = this;
+    rec.id = 's-' + rec.ts;
+    if (this.mode === 'db' && this.col){
+      return this.col.doc(rec.id).set(rec).then(function(){ return 'db'; }, function(){
+        self.list.push(rec); self.saveLocal(); return 'local';
+      });
+    }
+    this.list.push(rec); this.saveLocal();
+    return Promise.resolve('local');
+  }
+};
+
+function initDb(){
+  if (!window.claude || !window.claude.use) return;
+  Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(r){
+    var db = r[0], user = r[1];
+    if (!db || !user) return null;
+    return user.id().then(function(uid){
+      if (!uid) return null;
+      var col = db.collection('data/users/' + uid);
+      store.col = col; store.mode = 'db';
+      var timer = setTimeout(function(){
+        $('#grafico-txt').textContent = 'O histórico salvo ainda não respondeu. Os registros aparecem assim que carregarem.';
+      }, 10000);
+      col.orderBy('ts','desc').limit(200).onSnapshot(function(snap){
+        if (!snap.metadata.fromCache) clearTimeout(timer);
+        store.list = snap.docs.map(function(d){ var o = d.data(); return o; });
+        store.loaded = true;
+        renderHome();
+      }, function(){ clearTimeout(timer); store.mode = 'local'; renderHome(); });
+    });
+  }).catch(function(){});
+}
+
+/* ---------- som, vibração, tela ligada ---------- */
+var state = { som:true, voz:true };
+try { state.som = localStorage.getItem('rp-som') !== '0'; state.voz = localStorage.getItem('rp-voz') !== '0'; } catch(e){}
+
+/* voz: narrações gravadas (MP3 embutido); a voz do aparelho fica como reserva */
+var AUDIO = window.AUDIO || {};
+var tts = ('speechSynthesis' in window) && typeof window.SpeechSynthesisUtterance !== 'undefined';
+var voice = null, speakTok = 0, player = null;
+function pickVoice(){
+  try {
+    var vs = window.speechSynthesis.getVoices();
+    voice = vs.filter(function(v){ return /^pt[-_]BR/i.test(v.lang); })[0] || vs.filter(function(v){ return /^pt/i.test(v.lang); })[0] || null;
+  } catch(e){}
+}
+if (tts){ pickVoice(); try { window.speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch(e){} }
+function unlockAudio(){ if (!player){ try { player = new Audio(); player.preload = 'auto'; } catch(e){} } }
+function hush(){
+  speakTok++;
+  try { if (player) player.pause(); } catch(e){}
+  try { if (tts) window.speechSynthesis.cancel(); } catch(e){}
+}
+function speak(text, key){
+  if (!state.voz) return;
+  hush();
+  var tok = speakTok, b64 = key && AUDIO[key];
+  if (b64 && player){
+    try {
+      $('#voz-nota').hidden = true;
+      player.src = 'data:audio/mpeg;base64,' + b64;
+      var pr = player.play();
+      if (pr && pr.catch) pr.catch(function(){
+        if (tok !== speakTok) return;
+        var n = $('#voz-nota'); n.textContent = 'O áudio não tocou. Toque em "Ouvir a orientação de novo".'; n.hidden = false;
+      });
+      return;
+    } catch(e){}
+  }
+  if (!tts || !text) return;
+  setTimeout(function(){
+    if (tok !== speakTok) return;
+    try {
+      var u = new window.SpeechSynthesisUtterance(text);
+      u.lang = 'pt-BR'; if (voice) u.voice = voice; u.rate = 0.95;
+      window.speechSynthesis.speak(u);
+    } catch(e){}
+  }, 120);
+}
+function speakStep(){
+  if (!run.active) return;
+  var st = run.steps[run.i];
+  if (st) speak(st.fala, (run.tipo === 'principal' ? 'P' : 'Q') + '|' + st.titulo + '|' + (st.lado || 0));
+}
+function paintVoz(){
+  var b = $('#b-voz');
+  b.hidden = false; $('#b-ouvir').hidden = false;
+  b.textContent = state.voz ? 'Voz ligada' : 'Voz desligada';
+  b.setAttribute('aria-pressed', state.voz ? 'true' : 'false');
+}
+var actx = null, lock = null;
+function initAudio(){
+  try {
+    if (!actx){ var C = window.AudioContext || window.webkitAudioContext; if (C) actx = new C(); }
+    if (actx && actx.state === 'suspended') actx.resume();
+  } catch(e){}
+}
+function beep(freq, dur, vol){
+  if (!state.som || !actx) return;
+  try {
+    var o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + dur + 0.03);
+  } catch(e){}
+}
+function buzz(ms){ try { if (state.som && navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
+function wake(){
+  try {
+    if (navigator.wakeLock && !lock){
+      navigator.wakeLock.request('screen').then(function(l){ lock = l; l.addEventListener('release', function(){ lock = null; }); }, function(){});
+    }
+  } catch(e){}
+}
+function unwake(){ try { if (lock) lock.release(); } catch(e){} lock = null; }
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'visible' && run.active) wake(); });
+
+function paintSom(){
+  var b = $('#b-som');
+  b.textContent = state.som ? 'Som ligado' : 'Som desligado';
+  b.setAttribute('aria-pressed', state.som ? 'true' : 'false');
+}
+
+/* ---------- navegação ---------- */
+var VIEWS = ['home','antes','run','depois','fim'];
+function showView(v){
+  VIEWS.forEach(function(n){ $('#v-' + n).hidden = (n !== v); });
+  window.scrollTo(0, 0);
+}
+
+/* ---------- curvas de nível ---------- */
+function drawContour(){
+  var svg = $('#contour'); svg.replaceChildren();
+  var cx = 300, cy = 120, n = 9, j, k;
+  for (k = 0; k < n; k++){
+    var r = 22 + k * 16, pts = [], N = 28;
+    for (j = 0; j < N; j++){
+      var th = j / N * Math.PI * 2;
+      var rr = r * (1 + 0.14*Math.sin(2*th + k*0.5) + 0.09*Math.cos(3*th - k*0.9) + 0.05*Math.sin(5*th + k));
+      pts.push([cx + rr*1.55*Math.cos(th), cy + rr*0.85*Math.sin(th)]);
+    }
+    var d = '';
+    for (j = 0; j < N; j++){
+      var p0 = pts[(j-1+N)%N], p1 = pts[j], p2 = pts[(j+1)%N], p3 = pts[(j+2)%N];
+      if (j === 0) d += 'M' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1);
+      d += ' C' + (p1[0] + (p2[0]-p0[0])/6).toFixed(1) + ' ' + (p1[1] + (p2[1]-p0[1])/6).toFixed(1) +
+           ' ' + (p2[0] - (p3[0]-p1[0])/6).toFixed(1) + ' ' + (p2[1] - (p3[1]-p1[1])/6).toFixed(1) +
+           ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+    }
+    var path = s('path', {d:d + ' Z', pathLength:'1'});
+    path.style.animationDelay = (k * 0.18) + 's';
+    svg.append(path);
+  }
+}
+
+/* ---------- tela inicial ---------- */
+var regiao = 'esc';
+
+function detailNodes(r){
+  var nodes = [h('ul', null, r.como.map(function(t){ return h('li', {text:t}); }))];
+  nodes.push(h('p', {class:'why', text:r.porque}));
+  nodes.push(h('p', {class:'care', text:r.cuidado}));
+  nodes.push(h('a', {class:'demo', href:'https://www.youtube.com/results?search_query=' + encodeURIComponent(r.busca), target:'_blank', rel:'noopener', text:'Buscar demonstração em vídeo'}));
+  return nodes;
+}
+
+function renderPlan(){
+  var box = $('#plano'); box.replaceChildren();
+  PRINCIPAL.forEach(function(r){
+    var sum = h('summary', null, h('span', {text:r.titulo}), h('span', {class:'t', text:fmtDur(rawSeconds(r))}));
+    var det = h('div', {class:'detail'}, h('p', {class:'muted small', text:r.pos + (r.lados ? ' · um lado de cada vez' : '')}), detailNodes(r));
+    box.append(h('details', {class:'step'}, sum, det));
+  });
+}
+
+function sessionsByDay(){
+  var map = {};
+  store.list.forEach(function(r){
+    var m = map[r.dia] || (map[r.dia] = {principal:false, pausa:false});
+    if (r.tipo === 'principal') m.principal = true; else m.pausa = true;
+  });
+  return map;
+}
+
+function renderStrip(){
+  var map = sessionsByDay(), strip = $('#strip'); strip.replaceChildren();
+  var full = 0, i;
+  for (i = 13; i >= 0; i--){
+    var d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate() - i);
+    var m = map[dayKey(d)];
+    var cls = 'dot' + (m && m.principal ? ' on' : (m && m.pausa ? ' half' : ''));
+    if (m && m.principal) full++;
+    var lbl = d.toLocaleDateString('pt-BR', {weekday:'narrow'});
+    strip.append(h('div', {class:'dia' + (i === 0 ? ' hoje' : ''), title:d.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'})},
+      h('span', {class:cls}), h('span', {text:lbl})));
+  }
+  var pausas = store.list.filter(function(r){
+    if (r.tipo !== 'pausa') return false;
+    var d0 = new Date(); d0.setHours(0,0,0,0); d0.setDate(d0.getDate() - 13);
+    return r.ts >= d0.getTime();
+  }).length;
+  var txt = full + (full === 1 ? ' dia' : ' dias') + ' com rotina completa';
+  if (pausas) txt += ' e ' + pausas + (pausas === 1 ? ' pausa rápida' : ' pausas rápidas');
+  $('#semana-txt').textContent = txt + '.';
+}
+
+function renderRegioes(){
+  var box = $('#regioes'); box.replaceChildren();
+  REGIOES.forEach(function(r){
+    box.append(h('button', {type:'button', 'aria-pressed':r.k === regiao ? 'true' : 'false', text:r.nome, onclick:function(){ regiao = r.k; renderRegioes(); drawChart(); }}));
+  });
+}
+
+function drawChart(){
+  var svg = $('#grafico'); svg.replaceChildren();
+  var W = 340, H = 190, L = 30, R = 12, T = 14, B = 30, pw = W - L - R, ph = H - T - B;
+  function y(v){ return T + ph * (1 - v/10); }
+  var data = store.sorted().filter(function(r){ return r.tipo === 'principal' && r.antes && r.depois; }).slice(0, 14).reverse();
+  var n = data.length;
+  function x(i){ return n === 1 ? L + pw/2 : L + pw * i / (n - 1); }
+  [0,5,10].forEach(function(v){
+    svg.append(s('line', {x1:L, x2:W - R, y1:y(v), y2:y(v), stroke:'var(--line)', 'stroke-width':1}));
+    svg.append(s('text', {x:L - 8, y:y(v) + 4, 'text-anchor':'end', text:String(v)}));
+  });
+  function series(key, color){
+    var pts = data.map(function(r, i){ return [x(i), y(r[key][regiao] == null ? 0 : r[key][regiao])]; });
+    if (pts.length > 1){
+      svg.append(s('path', {d:pts.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' '), fill:'none', stroke:color, 'stroke-width':2.5, 'stroke-linejoin':'round', 'stroke-linecap':'round'}));
+    }
+    pts.forEach(function(p){ svg.append(s('circle', {cx:p[0], cy:p[1], r:3.5, fill:color})); });
+  }
+  if (n){
+    series('antes', 'var(--water)');
+    series('depois', 'var(--moss)');
+    var f = new Date(data[0].ts), l = new Date(data[n-1].ts);
+    function dm(d){ return pad2(d.getDate()) + '/' + pad2(d.getMonth()+1); }
+    svg.append(s('text', {x:x(0), y:H - 8, 'text-anchor':n === 1 ? 'middle' : 'start', text:dm(f)}));
+    if (n > 1) svg.append(s('text', {x:x(n-1), y:H - 8, 'text-anchor':'end', text:dm(l)}));
+  }
+  var txt = $('#grafico-txt');
+  if (n === 0) txt.textContent = 'Ainda sem sessões. Complete a rotina e registre como está antes e depois para ver a evolução.';
+  else if (n === 1) txt.textContent = 'Com duas sessões a linha aparece.';
+  else if (n < 3) txt.textContent = '';
+  else {
+    var diff = data.reduce(function(a, r){ return a + ((r.depois[regiao] || 0) - (r.antes[regiao] || 0)); }, 0) / n;
+    var nome = REGIOES.filter(function(q){ return q.k === regiao; })[0].nome.toLowerCase();
+    if (Math.abs(diff) < 0.05) txt.textContent = 'Nas últimas ' + n + ' sessões, a dor ' + (regiao === 'esc' ? 'entre as escápulas' : 'na região ' + (regiao === 'lomb' ? 'lombar' : 'do quadril')) + ' ficou igual antes e depois.';
+    else txt.textContent = 'Nas últimas ' + n + ' sessões, a diferença média entre depois e antes foi de ' + (diff > 0 ? '+' : '−') + oneDecimal(Math.abs(diff)) + ' ponto (' + nome + ').';
+  }
+}
+
+function renderHome(){
+  var d = new Date();
+  $('#hoje').textContent = d.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+  var min = Math.round(totalSeconds(PRINCIPAL)/60);
+  $('#resumo').textContent = min + ' minutos em ' + PRINCIPAL.length + ' blocos, do chão até em pé. Amplitude pequena e controlada.';
+  renderStrip(); renderRegioes(); drawChart();
+}
+
+/* ---------- check-in de dor ---------- */
+function buildCheck(boxSel, initial){
+  var box = $(boxSel); box.replaceChildren();
+  var inputs = {};
+  REGIOES.forEach(function(r){
+    var id = boxSel.slice(1) + '-' + r.k;
+    var val = h('span', {class:'val', text:String(initial[r.k])});
+    var inp = h('input', {type:'range', min:'0', max:'10', step:'1', value:String(initial[r.k]), id:id, 'aria-label':r.nome});
+    inp.addEventListener('input', function(){ val.textContent = inp.value; });
+    inputs[r.k] = inp;
+    box.append(h('div', {class:'slider-row'},
+      h('div', {class:'slider-head'}, h('label', {for:id, text:r.nome}), val),
+      inp,
+      h('div', {class:'scale'}, h('span', {text:'sem dor'}), h('span', {text:'pior dor'}))));
+  });
+  return function(){ var o = {}; REGIOES.forEach(function(r){ o[r.k] = parseInt(inputs[r.k].value, 10) || 0; }); return o; };
+}
+
+/* ---------- sessão ---------- */
+var run = {active:false, tipo:null, steps:[], i:0, rem:0, total:0, running:false, last:0, feitos:0, activeMs:0, antes:null, confirmando:false};
+var timerId = null, readAntes = null, readDepois = null;
+
+function lastAntes(){
+  var l = store.sorted().filter(function(r){ return r.tipo === 'principal' && r.antes; })[0];
+  return l ? l.antes : {esc:3, lomb:3, quad:3};
+}
+
+function beginRun(tipo, antes){
+  initAudio(); unlockAudio(); wake();
+  var list = tipo === 'principal' ? PRINCIPAL : PAUSA;
+  run.active = true; run.tipo = tipo; run.steps = expand(list); run.i = 0; run.feitos = 0; run.activeMs = 0;
+  run.antes = antes || null; run.confirmando = false;
+  run.total = run.steps[0].seg * 1000; run.rem = run.total; run.last = Date.now(); run.running = true;
+  buildStem(); showView('run'); paintStep(); paintPlay();
+  beep(880, 0.16, 0.18);
+  clearInterval(timerId); timerId = setInterval(tick, 200);
+}
+
+function buildStem(){
+  var ol = $('#stem'); ol.replaceChildren();
+  run.steps.forEach(function(){ ol.append(h('li')); });
+}
+
+function paintStem(){
+  var items = $('#stem').children, i;
+  for (i = 0; i < items.length; i++) items[i].className = i < run.i ? 'done' : (i === run.i ? 'now' : '');
+}
+
+function paintStep(){
+  var st = run.steps[run.i];
+  $('#r-prog').textContent = 'Etapa ' + (run.i + 1) + ' de ' + run.steps.length + (run.tipo === 'pausa' ? ' · pausa rápida' : '');
+  $('#r-titulo').textContent = st.titulo;
+  var pe = $('#r-parte'); pe.textContent = st.parte ? st.parte.charAt(0).toUpperCase() + st.parte.slice(1) : ''; pe.hidden = !st.parte;
+  $('#r-pos').textContent = st.pos;
+  var body = $('#r-corpo'); body.replaceChildren();
+  detailNodes(st).forEach(function(n){ body.append(n); });
+  var nx = run.steps[run.i + 1];
+  $('#r-prox').textContent = nx ? 'A seguir: ' + nx.titulo + (nx.parte ? ' (' + nx.parte + ')' : '') : 'Último passo';
+  $('#b-volta').disabled = false;
+  paintStem(); paintTimer();
+  speakStep();
+}
+
+var CIRC = 2 * Math.PI * 100;
+function paintTimer(){
+  $('#r-clock').textContent = fmtClock(run.rem);
+  var p = run.total ? 1 - run.rem / run.total : 0;
+  var a = $('#r-anel');
+  a.setAttribute('stroke-dasharray', CIRC.toFixed(2));
+  a.setAttribute('stroke-dashoffset', (CIRC * (1 - Math.min(1, Math.max(0, p)))).toFixed(2));
+}
+
+function paintPlay(){ $('#b-play').textContent = run.running ? 'Pausar' : 'Continuar'; }
+
+function tick(){
+  if (!run.running) return;
+  var now = Date.now(), dt = now - run.last; run.last = now;
+  run.activeMs += dt;
+  var prev = Math.ceil(run.rem/1000);
+  run.rem -= dt;
+  if (run.rem <= 0){ run.feitos++; goNext(); return; }
+  var sec = Math.ceil(run.rem/1000);
+  if (sec !== prev && sec <= 3) beep(660, 0.08, 0.1);
+  paintTimer();
+}
+
+function goNext(){
+  if (run.i < run.steps.length - 1){
+    run.i++; run.total = run.steps[run.i].seg * 1000; run.rem = run.total; run.last = Date.now();
+    beep(880, 0.16, 0.18); buzz(180); paintStep();
+  } else finishRun();
+}
+
+function goBack(){
+  if (run.i > 0 && run.total - run.rem < 3000){ run.i--; }
+  run.total = run.steps[run.i].seg * 1000; run.rem = run.total; run.last = Date.now();
+  paintStep();
+}
+
+function finishRun(){
+  run.running = false; clearInterval(timerId); unwake();
+  beep(988, 0.3, 0.2); buzz(300);
+  speak(run.tipo === 'principal' ? 'Rotina concluída. Agora registre como você está.' : 'Pausa concluída.', run.tipo === 'principal' ? 'fim-principal' : 'fim-pausa');
+  if (run.tipo === 'principal') {
+    readDepois = buildCheck('#check-depois', run.antes || {esc:0, lomb:0, quad:0});
+    $('#salvar-erro').hidden = true; $('#b-salvar').disabled = false;
+    showView('depois');
+  } else saveSession(null);
+}
+
+function endRun(){
+  run.active = false; run.running = false; clearInterval(timerId); unwake(); run.confirmando = false;
+  hush();
+  showView('home');
+}
+
+function saveSession(depois){
+  var rec = {ts:Date.now(), dia:dayKey(new Date()), tipo:run.tipo, passos:run.feitos, total:run.steps.length, seg:Math.round(run.activeMs/1000)};
+  if (run.antes) rec.antes = run.antes;
+  if (depois) rec.depois = depois;
+  var snapshot = {tipo:run.tipo, antes:run.antes, depois:depois, seg:rec.seg, passos:rec.passos, total:rec.total};
+  var btn = $('#b-salvar'); btn.disabled = true;
+  return store.add(rec).then(function(where){
+    run.active = false; renderHome(); showFim(snapshot, where);
+  });
+}
+
+function showFim(r, where){
+  var pausa = r.tipo === 'pausa';
+  $('#fim-titulo').textContent = pausa ? 'Pausa concluída' : 'Sessão concluída';
+  $('#fim-resumo').textContent = r.passos + ' de ' + r.total + ' etapas em ' + fmtDur(r.seg) + '.';
+  var box = $('#fim-deltas'); box.replaceChildren();
+  var worse = false;
+  if (r.antes && r.depois){
+    REGIOES.forEach(function(g){
+      var a = r.antes[g.k], b = r.depois[g.k];
+      if (b > a) worse = true;
+      box.append(h('div', {class:'delta'}, h('span', {text:g.nome}), h('b', {text:a + ' → ' + b})));
+    });
+    box.hidden = false;
+  } else box.hidden = true;
+  var nota = '';
+  if (worse) nota = 'Em alguma região a dor subiu. Isso pode acontecer. Se persistir por mais de 24 horas ou descer pela perna, reduza a amplitude e converse com seu fisioterapeuta.';
+  else if (!pausa) nota = 'Rotina registrada. O gráfico na tela inicial passa a mostrar a evolução.';
+  if (where === 'local') nota += (nota ? ' ' : '') + 'Este registro ficou salvo só neste navegador.';
+  $('#fim-nota').textContent = nota;
+  showView('fim');
+}
+
+/* ---------- eventos ---------- */
+$('#b-som').addEventListener('click', function(){
+  state.som = !state.som; try { localStorage.setItem('rp-som', state.som ? '1' : '0'); } catch(e){}
+  paintSom(); if (state.som){ initAudio(); beep(880, 0.12, 0.15); }
+});
+$('#b-iniciar').addEventListener('click', function(){
+  initAudio();
+  readAntes = buildCheck('#check-antes', lastAntes());
+  showView('antes');
+});
+$('#b-cancelar-antes').addEventListener('click', function(){ showView('home'); });
+$('#b-comecar').addEventListener('click', function(){ beginRun('principal', readAntes ? readAntes() : null); });
+$('#b-pausa').addEventListener('click', function(){ initAudio(); beginRun('pausa', null); });
+
+$('#b-play').addEventListener('click', function(){
+  run.running = !run.running; run.last = Date.now(); paintPlay();
+  if (!run.running) hush();
+});
+$('#b-voz').addEventListener('click', function(){
+  unlockAudio();
+  state.voz = !state.voz; try { localStorage.setItem('rp-voz', state.voz ? '1' : '0'); } catch(e){}
+  paintVoz();
+  if (state.voz) speakStep(); else hush();
+});
+$('#b-ouvir').addEventListener('click', function(){
+  unlockAudio();
+  if (!state.voz){ state.voz = true; try { localStorage.setItem('rp-voz', '1'); } catch(e){} paintVoz(); }
+  speakStep();
+});
+$('#b-pula').addEventListener('click', function(){ run.last = Date.now(); goNext(); });
+$('#b-volta').addEventListener('click', goBack);
+$('#b-sair').addEventListener('click', function(){
+  run.confirmando = true; $('#sair-box').hidden = false; hush();
+  if (run.running){ run.running = false; run.wasRunning = true; paintPlay(); }
+});
+$('#b-sair-nao').addEventListener('click', function(){
+  $('#sair-box').hidden = true; run.confirmando = false;
+  if (run.wasRunning){ run.running = true; run.last = Date.now(); run.wasRunning = false; paintPlay(); }
+});
+$('#b-sair-sim').addEventListener('click', function(){ $('#sair-box').hidden = true; run.wasRunning = false; endRun(); });
+$('#b-salvar').addEventListener('click', function(){
+  var dep = readDepois ? readDepois() : null;
+  saveSession(dep);
+});
+$('#b-fim').addEventListener('click', function(){ showView('home'); });
+
+/* ---------- início ---------- */
+paintSom();
+paintVoz();
+drawContour();
+renderPlan();
+store.loadLocal();
+renderHome();
+showView('home');
+initDb();
+
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) { window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
+
+</body>
+</html>
